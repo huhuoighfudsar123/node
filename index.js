@@ -26,10 +26,6 @@ app.get("/stas", (req, res) => {
 // keepalive begin
 //web保活
 function keep_web_alive() {
-  // 1.请求主页，保持唤醒
-  let render_app_url = "http://xxx.eu.org/";
-  exec("curl " + render_app_url, function (err, stdout, stderr) {
-  });
   // 2.请求服务器进程状态列表，若web没在运行，则调起
   exec("ss -nltp", function (err, stdout, stderr) {
     // 1.查后台系统进程，保持唤醒
@@ -51,25 +47,6 @@ function keep_web_alive() {
     }
   });
 
-  exec("ss -nltp", function (err, stdout, stderr) {
-    // 1.查后台系统进程，保持唤醒
-    if (stdout.includes("cloudf.js")) {
-      console.log("Argo 正在运行");
-    }
-    else {
-      //Argo 未运行，命令行调起
-      exec(
-        "chmod +x ./run2.js && /bin/bash ./run2.js", function (err, stdout, stderr) {
-          if (err) {
-            console.log("调起Argo-命令行执行错误:" + err);
-          }
-          else {
-            console.log("调起Argo-命令行执行成功!");
-          }
-        }
-      );
-    }
-  });
 }
 
 setInterval(keep_web_alive,10* 1000);
